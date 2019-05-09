@@ -117,6 +117,7 @@ class MagnumIntegrationConan(ConanFile):
                                "and 'with_opengeximporter' cannot both be on.")
         if self.options.with_assimpimporter:
             self.requires("Assimp/4.1.0@jacmoe/stable")
+            self.options["magnum"].with_anyimageimporter = True
 
     def source(self):
         source_url = "https://github.com/mosra/magnum-plugins"
