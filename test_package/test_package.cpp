@@ -3,12 +3,19 @@
 #include <Magnum/Primitives/Icosphere.h>
 #include <Magnum/Trade/MeshData3D.h>
 
+#include <Corrade/PluginManager/PluginManager.h>
 #include <Corrade/Utility/Debug.h>
+#include <Magnum/Trade/AbstractImporter.h>
+
+#include <memory>
+
+using namespace Magnum;
+using namespace Corrade;
 
 int main() {
-    const Magnum::Trade::MeshData3D sphere = Magnum::Primitives::icosphereSolid(4);
+  PluginManager::Manager<Trade::AbstractImporter> manager;
+  // std::unique_ptr<Trade::AbstractImporter> importer =
+  //     manager.instantiate("AssimpImporter");
 
-    Corrade::Utility::Debug() << "Success";
-
-    return EXIT_SUCCESS;
+  return EXIT_SUCCESS;
 }

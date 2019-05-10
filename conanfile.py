@@ -107,6 +107,36 @@ class MagnumIntegrationConan(ConanFile):
         if self.options.shared:
             self.options['magnum'].add_option('shared', True)
 
+    def system_package_architecture(self):
+        if tools.os_info.with_apt:
+            if self.settings.arch == "x86":
+                return ':i386'
+            elif self.settings.arch == "x86_64":
+                return ':amd64'
+            elif self.settings.arch == "armv6" or self.settings.arch == "armv7":
+                return ':armel'
+            elif self.settings.arch == "armv7hf":
+                return ':armhf'
+            elif self.settings.arch == "armv8":
+                return ':arm64'
+
+        if tools.os_info.with_yum:
+            if self.settings.arch == "x86":
+                return '.i686'
+            elif self.settings.arch == 'x86_64':
+                return '.x86_64'
+        return ""
+
+    def system_requirements(self):
+        packages = []
+        if self.options.with_assimpimporter:
+            packages.append('libassimp-dev')
+
+        installer = tools.SystemPackageTool()
+        arch_suffix = self.system_package_architecture()
+        for package in packages:
+            installer.install("{}{}".format(package, arch_suffix))
+
     def requirements(self):
         if self.options.with_freetypefont and self.options.with_harfbuzzfont:
             raise RuntimeError(
@@ -116,7 +146,6 @@ class MagnumIntegrationConan(ConanFile):
             raise RuntimeError("Exclusive options selected! 'with_openddl' "
                                "and 'with_opengeximporter' cannot both be on.")
         if self.options.with_assimpimporter:
-            self.requires("Assimp/4.1.0@jacmoe/stable")
             self.options["magnum"].with_anyimageimporter = True
 
     def source(self):
