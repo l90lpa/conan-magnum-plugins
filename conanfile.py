@@ -149,7 +149,7 @@ class MagnumIntegrationConan(ConanFile):
     def system_requirements(self):
         packages = []
         if self.options.with_freetypefont:
-            packages.append('libfreetype6-dev')
+            packages.append("libfreetype6-dev")
 
         installer = tools.SystemPackageTool()
         arch_suffix = self.system_package_architecture()
@@ -226,18 +226,22 @@ class MagnumIntegrationConan(ConanFile):
 
         # find static plugin libraries and add them to the linker list
         if self.options.build_plugins_static:
-            plugin_libs_path = (
-                Path("lib")
-                / f"magnum{'-d' if self.settings.build_type == 'Debug' else ''}"
-            )
 
             plugin_libs = []
             libdirs = set()
+
+            plugin_libs_path = Path("lib") / "magnum"
             for plugin_lib in plugin_libs_path.glob("**/*.a"):
                 plugin_libs.append(plugin_lib.stem[3:])
                 libdirs.add(plugin_lib.parent)
+
+            plugin_libs_path = Path("lib") / "magnum-d"
+            for plugin_lib in plugin_libs_path.glob("**/*.a"):
+                plugin_libs.append(plugin_lib.stem[3:])
+                libdirs.add(plugin_lib.parent)
+
             self.cpp_info.libs = plugin_libs + self.cpp_info.libs
             self.cpp_info.libdirs.extend(libdirs)
 
         if self.options.with_freetypefont:
-            self.cpp_info.libs.append('freetype')
+            self.cpp_info.libs.append("freetype")
