@@ -1,11 +1,13 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from conans import ConanFile, CMake, tools
 import os
 
+from conans import CMake, ConanFile, tools
+from conans.errors import ConanInvalidConfiguration
 
-def sort_libs(correct_order, libs, lib_suffix='', reverse_result=False):
+
+def sort_libs(correct_order, libs, lib_suffix="", reverse_result=False):
     # Add suffix for correct string matching
     correct_order[:] = [s.__add__(lib_suffix) for s in correct_order]
 
@@ -25,10 +27,8 @@ def sort_libs(correct_order, libs, lib_suffix='', reverse_result=False):
 class MagnumIntegrationConan(ConanFile):
     name = "magnum-plugins"
     version = "2019.01"
-    description = (
-        "Magnum Plugins - Plugins for the Magnum C++11/C++14 graphics engine")
-    topics = ("conan", "corrade", "graphics", "rendering", "3d", "2d",
-              "opengl")
+    description = "Magnum Plugins - Plugins for the Magnum C++11/C++14 graphics engine"
+    topics = ("conan", "corrade", "graphics", "rendering", "3d", "2d", "opengl")
     url = "https://github.com/rhololkeolke/conan-magnum-plugins"
     author = "helmesjo <helmesjo@gmail.com>"
     # Indicates license type of the packaged library; please use SPDX
@@ -43,6 +43,7 @@ class MagnumIntegrationConan(ConanFile):
     settings = "os", "arch", "compiler", "build_type"
     options = {
         "shared": [True, False],
+        "build_plugins_static": [True, False],
         "fPIC": [True, False],
         "with_assimpimporter": [True, False],
         "with_ddsimporter": [True, False],
@@ -67,6 +68,7 @@ class MagnumIntegrationConan(ConanFile):
     }
     default_options = {
         "shared": False,
+        "build_plugins_static": True,
         "fPIC": True,
         "with_assimpimporter": False,
         "with_ddsimporter": False,
@@ -94,43 +96,57 @@ class MagnumIntegrationConan(ConanFile):
     _source_subfolder = "source_subfolder"
     _build_subfolder = "build_subfolder"
 
-    requires = ("magnum/2019.01@rhololkeolke/testing",
-                "corrade/2019.01@rhololkeolke/testing")
+    requires = (
+        "magnum/2019.01@rhololkeolke/testing",
+        "corrade/2019.01@rhololkeolke/testing",
+    )
 
     def config_options(self):
-        if self.settings.os == 'Windows':
+        if self.settings.os == "Windows":
             del self.options.fPIC
 
     def configure(self):
         # To fix issue with resource management, see here:
         # https://github.com/mosra/magnum/issues/304#issuecomment-451768389
         if self.options.shared:
-            self.options['magnum'].add_option('shared', True)
+            self.options["magnum"].add_option("shared", True)
+        if self.options.with_freetypefont and self.options.with_harfbuzzfont:
+            raise ConanInvalidConfiguration(
+                "Exclusive options selected! 'with_freetypefont' and "
+                "'with_harfbuzzfont' cannot both be on."
+            )
+        if self.options.with_openddl and self.options.with_opengeximporter:
+            raise ConanInvalidConfiguration(
+                "Exclusive options selected! 'with_openddl' "
+                "and 'with_opengeximporter' cannot both be on."
+            )
+        if self.options.with_assimpimporter:
+            self.options["magnum"].with_anyimageimporter = True
 
     def system_package_architecture(self):
         if tools.os_info.with_apt:
             if self.settings.arch == "x86":
-                return ':i386'
+                return ":i386"
             elif self.settings.arch == "x86_64":
-                return ':amd64'
+                return ":amd64"
             elif self.settings.arch == "armv6" or self.settings.arch == "armv7":
-                return ':armel'
+                return ":armel"
             elif self.settings.arch == "armv7hf":
-                return ':armhf'
+                return ":armhf"
             elif self.settings.arch == "armv8":
-                return ':arm64'
+                return ":arm64"
 
         if tools.os_info.with_yum:
             if self.settings.arch == "x86":
-                return '.i686'
-            elif self.settings.arch == 'x86_64':
-                return '.x86_64'
+                return ".i686"
+            elif self.settings.arch == "x86_64":
+                return ".x86_64"
         return ""
 
     def system_requirements(self):
         packages = []
         if self.options.with_assimpimporter:
-            packages.append('libassimp-dev')
+            packages.append("libassimp-dev")
 
         installer = tools.SystemPackageTool()
         arch_suffix = self.system_package_architecture()
@@ -138,15 +154,8 @@ class MagnumIntegrationConan(ConanFile):
             installer.install("{}{}".format(package, arch_suffix))
 
     def requirements(self):
-        if self.options.with_freetypefont and self.options.with_harfbuzzfont:
-            raise RuntimeError(
-                "Exclusive options selected! 'with_freetypefont' and "
-                "'with_harfbuzzfont' cannot both be on.")
-        if self.options.with_openddl and self.options.with_opengeximporter:
-            raise RuntimeError("Exclusive options selected! 'with_openddl' "
-                               "and 'with_opengeximporter' cannot both be on.")
         if self.options.with_assimpimporter:
-            self.options["magnum"].with_anyimageimporter = True
+            self.requires("assimp/5.0.0.rc2@rhololkeolke/stable")
 
     def source(self):
         source_url = "https://github.com/mosra/magnum-plugins"
@@ -162,7 +171,13 @@ class MagnumIntegrationConan(ConanFile):
         def add_cmake_option(option, value):
             var_name = "{}".format(option).upper()
             value_str = "{}".format(value)
-            var_value = "ON" if value_str == 'True' else "OFF" if value_str == 'False' else value_str
+            var_value = (
+                "ON"
+                if value_str == "True"
+                else "OFF"
+                if value_str == "False"
+                else value_str
+            )
             cmake.definitions[var_name] = var_value
 
         for option, value in self.options.items():
@@ -172,11 +187,13 @@ class MagnumIntegrationConan(ConanFile):
         # running cmake.install() Set it explicitly to empty, else
         # Magnum might set it implicitly (eg. to "64")
         add_cmake_option("LIB_SUFFIX", "")
-
+        add_cmake_option("BUILD_PLUGINS_STATIC", self.options.build_plugins_static)
         add_cmake_option("BUILD_STATIC", not self.options.shared)
+        
         add_cmake_option(
-            "BUILD_STATIC_PIC", not self.options.shared
-            and self.options.get_safe("fPIC"))
+            "BUILD_STATIC_PIC",
+            not self.options.shared and self.options.get_safe("fPIC"),
+        )
 
         cmake.configure(build_folder=self._build_subfolder)
 
@@ -187,22 +204,19 @@ class MagnumIntegrationConan(ConanFile):
         cmake.build()
 
     def package(self):
-        self.copy(
-            pattern="LICENSE", dst="licenses", src=self._source_subfolder)
+        self.copy(pattern="LICENSE", dst="licenses", src=self._source_subfolder)
         cmake = self._configure_cmake()
         cmake.install()
 
     def package_info(self):
         allLibs = []
-        if self.options.with_assimpimporter:
-            allLibs.append("AssimpImporter")
-
         # Sort all built libs according to above, and reverse result
         # for correct link order
-        suffix = '-d' if self.settings.build_type == "Debug" else ''
+        suffix = "-d" if self.settings.build_type == "Debug" else ""
         builtLibs = tools.collect_libs(self)
         self.cpp_info.libs = sort_libs(
             correct_order=allLibs,
             libs=builtLibs,
             lib_suffix=suffix,
-            reverse_result=True)
+            reverse_result=True,
+        )
