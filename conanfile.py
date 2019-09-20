@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import os
+from pathlib import Path
 
 from conans import CMake, ConanFile, tools
 from conans.errors import ConanInvalidConfiguration
@@ -110,6 +111,8 @@ class MagnumIntegrationConan(ConanFile):
         # https://github.com/mosra/magnum/issues/304#issuecomment-451768389
         if self.options.shared:
             self.options["magnum"].add_option("shared", True)
+        if self.options.build_plugins_static:
+            self.options["magnum"].add_option("build_plugins_static", True)
         if self.options.with_freetypefont and self.options.with_harfbuzzfont:
             raise ConanInvalidConfiguration(
                 "Exclusive options selected! 'with_freetypefont' and "
@@ -145,8 +148,8 @@ class MagnumIntegrationConan(ConanFile):
 
     def system_requirements(self):
         packages = []
-        if self.options.with_assimpimporter:
-            packages.append("libassimp-dev")
+        if self.options.with_freetypefont:
+            packages.append('libfreetype6-dev')
 
         installer = tools.SystemPackageTool()
         arch_suffix = self.system_package_architecture()
@@ -189,7 +192,7 @@ class MagnumIntegrationConan(ConanFile):
         add_cmake_option("LIB_SUFFIX", "")
         add_cmake_option("BUILD_PLUGINS_STATIC", self.options.build_plugins_static)
         add_cmake_option("BUILD_STATIC", not self.options.shared)
-        
+
         add_cmake_option(
             "BUILD_STATIC_PIC",
             not self.options.shared and self.options.get_safe("fPIC"),
@@ -220,3 +223,21 @@ class MagnumIntegrationConan(ConanFile):
             lib_suffix=suffix,
             reverse_result=True,
         )
+
+        # find static plugin libraries and add them to the linker list
+        if self.options.build_plugins_static:
+            plugin_libs_path = (
+                Path("lib")
+                / f"magnum{'-d' if self.settings.build_type == 'Debug' else ''}"
+            )
+
+            plugin_libs = []
+            libdirs = set()
+            for plugin_lib in plugin_libs_path.glob("**/*.a"):
+                plugin_libs.append(plugin_lib.stem[3:])
+                libdirs.add(plugin_lib.parent)
+            self.cpp_info.libs = plugin_libs + self.cpp_info.libs
+            self.cpp_info.libdirs.extend(libdirs)
+
+        if self.options.with_freetypefont:
+            self.cpp_info.libs.append('freetype')
