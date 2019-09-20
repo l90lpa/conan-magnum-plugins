@@ -1,84 +1,30 @@
 env:
    global:
-     - CONAN_USERNAME: "rhololkeolke"
-     - CONAN_LOGIN_USERNAME: "rhololkeolke"
-     - CONAN_CHANNEL: "stable" # because of bug in conan-package-tools, we always upload packages as stable
-     - CONAN_UPLOAD: "https://api.bintray.com/conan/rhololkeolke/public-conan"
-     - CONAN_REMOTES: "https://api.bintray.com/conan/helmesjo/public-conan,https://api.bintray.com/conan/bincrafters/public-conan,https://api.bintray.com/conan/rhololkeolke/public-conan,https://api.bintray.com/conan/jacmoe/Conan"
-     - CONAN_UPLOAD_ONLY_WHEN_STABLE: 0
-
+     - CONAN_USERNAME: rhololkeolke
+     - CONAN_LOGIN_USERNAME: rhololkeolke
+     - CONAN_CHANNEL: stable
+     - CONAN_UPLOAD: https://api.bintray.com/conan/rhololkeolke/public-conan
+     - CONAN_STABLE_BRANCH_PATTERN: stable/*
+     - CONAN_UPLOAD_ONLY_WHEN_STABLE: 1
+     - CONAN_ARCHS: x86_64
+     - CONAN_BUILD_POLICY: outdated
+     - CONAN_REMOTES: "https://api.bintray.com/conan/bincrafters/public-conan"
+     - secure: "T1isErCvaY97TyoMZniKste+QLM+Vq7ocnD9TEZ369J6Mz4ayCbDJVVYi6KRPREEnICbKx/REqUEqHG7vZ/UxW46wHZLDihl086Q7vx7gpEgKXpXdHO3B3gwjkYBlWGUVsdWImcIaqkWRPfBemjG5kqRcUlLQUUSxoyOkYlG4i302GfFQ51iB/Af+T0OdEK6MX9L0U7N5iEDAheZiv1E2DurjfJABePNI7MaVUmgvuLBog5UNmznvjUsF/CTeHJ0E4wQ/27qiTjP6WLrfsV+FKSojty8FrWSkD74YAVP8hvtvBLwAhqUyjntjr8CYRU/Wc4aS1JpGO6fWsQNRJ6BErcesofTe7PRd2IVXupdXzC/XYhIWyiOPIXAtdouBQLmdv4eBEzlm/CRux8Bp2+LoJgMsySd7hK4s9WxSqZe1FPBled03m+wT/9BSIQN/plBXaUnzzK7AWGbGs+7V/H8nkDB11Q8N7mx2ABd+EFzGXYQ7mdtoSL3SlRgWMFMTTd6x/IhQ45ZNItHCbkfoSfW5yaKmpR12oH/ZtDmRtakUZSlHbUVGZHiioQARrI7G+iO/kJrRUOdXMVqUJglJSL7T9Bt+Sw7/+YJE6dNdVa+ntgWLQHg5qbbnpRwYYjrQyPTNg9wQPsCHGEEDYAf1JIEaBKlpNC/NI1fUcwBE0Lv6f8="
 linux: &linux
-   os: linux
-   dist: xenial
-   language: python
-   python: "3.7"
-   services:
-     - docker
-osx: &osx
-   os: osx
-   language: generic
+  os: linux
+  dist: xenial
+  sudo: required
+  language: python
+  python: '3.7'
+  services: 
+    - docker
 matrix:
-   include:
-      - <<: *linux
-        env: CONAN_GCC_VERSIONS=4.9 CONAN_DOCKER_IMAGE=conanio/gcc49-x86 CONAN_ARCHS=x86
-      - <<: *linux
-        env: CONAN_GCC_VERSIONS=4.9 CONAN_DOCKER_IMAGE=conanio/gcc49 CONAN_ARCHS=x86_64
-      - <<: *linux
-        env: CONAN_GCC_VERSIONS=5 CONAN_DOCKER_IMAGE=conanio/gcc5-x86 CONAN_ARCHS=x86
-      - <<: *linux
-        env: CONAN_GCC_VERSIONS=5 CONAN_DOCKER_IMAGE=conanio/gcc5 CONAN_ARCHS=x86_64
-      - <<: *linux
-        env: CONAN_GCC_VERSIONS=6 CONAN_DOCKER_IMAGE=conanio/gcc6-x86 CONAN_ARCHS=x86
-      - <<: *linux
-        env: CONAN_GCC_VERSIONS=6 CONAN_DOCKER_IMAGE=conanio/gcc6 CONAN_ARCHS=x86_64
-      - <<: *linux
-        env: CONAN_GCC_VERSIONS=7 CONAN_DOCKER_IMAGE=conanio/gcc7-x86 CONAN_ARCHS=x86
-      - <<: *linux
-        env: CONAN_GCC_VERSIONS=7 CONAN_DOCKER_IMAGE=conanio/gcc7 CONAN_ARCHS=x86_64
-      - <<: *linux
-        env: CONAN_GCC_VERSIONS=8 CONAN_DOCKER_IMAGE=conanio/gcc8-x86 CONAN_ARCHS=x86
-      - <<: *linux
-        env: CONAN_GCC_VERSIONS=8 CONAN_DOCKER_IMAGE=conanio/gcc8 CONAN_ARCHS=x86_64
-      - <<: *linux
-        env: CONAN_CLANG_VERSIONS=3.9 CONAN_DOCKER_IMAGE=conanio/clang39-x86 CONAN_ARCHS=x86
-      - <<: *linux
-        env: CONAN_CLANG_VERSIONS=3.9 CONAN_DOCKER_IMAGE=conanio/clang39 CONAN_ARCHS=x86_64
-      - <<: *linux
-        env: CONAN_CLANG_VERSIONS=4.0 CONAN_DOCKER_IMAGE=conanio/clang40-x86 CONAN_ARCHS=x86
-      - <<: *linux
-        env: CONAN_CLANG_VERSIONS=4.0 CONAN_DOCKER_IMAGE=conanio/clang40 CONAN_ARCHS=x86_64
-      - <<: *linux
-        env: CONAN_CLANG_VERSIONS=5.0 CONAN_DOCKER_IMAGE=conanio/clang50-x86 CONAN_ARCHS=x86
-      - <<: *linux
-        env: CONAN_CLANG_VERSIONS=5.0 CONAN_DOCKER_IMAGE=conanio/clang50 CONAN_ARCHS=x86_64
-      - <<: *linux
-        env: CONAN_CLANG_VERSIONS=6.0 CONAN_DOCKER_IMAGE=conanio/clang60-x86 CONAN_ARCHS=x86
-      - <<: *linux
-        env: CONAN_CLANG_VERSIONS=6.0 CONAN_DOCKER_IMAGE=conanio/clang60 CONAN_ARCHS=x86_64
-      - <<: *linux
-        env: CONAN_CLANG_VERSIONS=7.0 CONAN_DOCKER_IMAGE=conanio/clang7-x86 CONAN_ARCHS=x86
-      - <<: *linux
-        env: CONAN_CLANG_VERSIONS=7.0 CONAN_DOCKER_IMAGE=conanio/clang7 CONAN_ARCHS=x86_64
-      - <<: *osx
-        osx_image: xcode7.3
-        env: CONAN_APPLE_CLANG_VERSIONS=7.3
-      - <<: *osx
-        osx_image: xcode8.3
-        env: CONAN_APPLE_CLANG_VERSIONS=8.1
-      - <<: *osx
-        osx_image: xcode9
-        env: CONAN_APPLE_CLANG_VERSIONS=9.0
-      - <<: *osx
-        osx_image: xcode9.4
-        env: CONAN_APPLE_CLANG_VERSIONS=9.1
-      - <<: *osx
-        osx_image: xcode10.1
-        env: CONAN_APPLE_CLANG_VERSIONS=10.0
-
+  include:
+  - <<: *linux
+    env: CONAN_CLANG_VERSIONS=8 CONAN_DOCKER_IMAGE=rhololkeolke/clang8
 install:
-  - chmod +x .ci/install.sh
-  - ./.ci/install.sh
-
+  - chmod +x .travis/install.sh
+  - "./.travis/install.sh"
 script:
-  - chmod +x .ci/run.sh
-  - ./.ci/run.sh
+  - chmod +x .travis/run.sh
+  - "./.travis/run.sh"

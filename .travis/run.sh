@@ -1,6 +1,7 @@
-#!/usr/bin/env bash
+#!/bin/bash
 
-set -ex
+set -e
+set -x
 
 if [[ "$(uname -s)" == 'Darwin' ]]; then
     if which pyenv > /dev/null; then
