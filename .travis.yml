@@ -30,13 +30,13 @@ matrix:
   - <<: *linux
     env: CONAN_CLANG_VERSIONS=8 CONAN_DOCKER_IMAGE=rhololkeolke/clang8 CONAN_CURRENT_PAGE="Release-static-assimp-freetype"
   - <<: *linux
-    env: CONAN_CLANG_VERSIONS=8 CONAN_DOCKER_IMAGE=rhololkeolke/clang8 CONAN_CURRENT_PAGE="Release-debug"
+    env: CONAN_CLANG_VERSIONS=8 CONAN_DOCKER_IMAGE=rhololkeolke/clang8 CONAN_CURRENT_PAGE="Release-shared"
   - <<: *linux
-    env: CONAN_CLANG_VERSIONS=8 CONAN_DOCKER_IMAGE=rhololkeolke/clang8 CONAN_CURRENT_PAGE="Release-debug-assimp"
+    env: CONAN_CLANG_VERSIONS=8 CONAN_DOCKER_IMAGE=rhololkeolke/clang8 CONAN_CURRENT_PAGE="Release-shared-assimp"
   - <<: *linux
-    env: CONAN_CLANG_VERSIONS=8 CONAN_DOCKER_IMAGE=rhololkeolke/clang8 CONAN_CURRENT_PAGE="Release-debug-freetype"
+    env: CONAN_CLANG_VERSIONS=8 CONAN_DOCKER_IMAGE=rhololkeolke/clang8 CONAN_CURRENT_PAGE="Release-shared-freetype"
   - <<: *linux
-    env: CONAN_CLANG_VERSIONS=8 CONAN_DOCKER_IMAGE=rhololkeolke/clang8 CONAN_CURRENT_PAGE="Release-debug-assimp-freetype"
+    env: CONAN_CLANG_VERSIONS=8 CONAN_DOCKER_IMAGE=rhololkeolke/clang8 CONAN_CURRENT_PAGE="Release-shared-assimp-freetype"
   - <<: *linux
     env: CONAN_CLANG_VERSIONS=8 CONAN_DOCKER_IMAGE=rhololkeolke/clang8 CONAN_CURRENT_PAGE="Debug-static"
   - <<: *linux
@@ -46,13 +46,13 @@ matrix:
   - <<: *linux
     env: CONAN_CLANG_VERSIONS=8 CONAN_DOCKER_IMAGE=rhololkeolke/clang8 CONAN_CURRENT_PAGE="Debug-static-assimp-freetype"
   - <<: *linux
-    env: CONAN_CLANG_VERSIONS=8 CONAN_DOCKER_IMAGE=rhololkeolke/clang8 CONAN_CURRENT_PAGE="Debug-debug"
+    env: CONAN_CLANG_VERSIONS=8 CONAN_DOCKER_IMAGE=rhololkeolke/clang8 CONAN_CURRENT_PAGE="Debug-shared"
   - <<: *linux
-    env: CONAN_CLANG_VERSIONS=8 CONAN_DOCKER_IMAGE=rhololkeolke/clang8 CONAN_CURRENT_PAGE="Debug-debug-assimp"
+    env: CONAN_CLANG_VERSIONS=8 CONAN_DOCKER_IMAGE=rhololkeolke/clang8 CONAN_CURRENT_PAGE="Debug-shared-assimp"
   - <<: *linux
-    env: CONAN_CLANG_VERSIONS=8 CONAN_DOCKER_IMAGE=rhololkeolke/clang8 CONAN_CURRENT_PAGE="Debug-debug-freetype"
+    env: CONAN_CLANG_VERSIONS=8 CONAN_DOCKER_IMAGE=rhololkeolke/clang8 CONAN_CURRENT_PAGE="Debug-shared-freetype"
   - <<: *linux
-    env: CONAN_CLANG_VERSIONS=8 CONAN_DOCKER_IMAGE=rhololkeolke/clang8 CONAN_CURRENT_PAGE="Debug-debug-assimp-freetype"        
+    env: CONAN_CLANG_VERSIONS=8 CONAN_DOCKER_IMAGE=rhololkeolke/clang8 CONAN_CURRENT_PAGE="Debug-shared-assimp-freetype"        
 install:
   - chmod +x .travis/install.sh
   - "./.travis/install.sh"
