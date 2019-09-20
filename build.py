@@ -21,14 +21,14 @@ if __name__ == "__main__":
         ].append([settings, options, env_vars, build_requires, reference])
 
         assimp_options = copy.copy(options)
-        assimp_options["with_assimpimporter"] = True
+        assimp_options["magnum-plugins:with_assimpimporter"] = True
         named_builds[
             f"{settings['build_type']}-"
             f"{'static' if options['magnum-plugins:build_plugins_static'] else 'shared'}-assimp"
         ].append([settings, assimp_options, env_vars, build_requires, reference])
 
         freetype_options = copy.copy(options)
-        freetype_options["with_freetypefont"] = True
+        freetype_options["magnum-plugins:with_freetypefont"] = True
         named_builds[
             f"{settings['build_type']}-"
             f"{'static' if options['magnum-plugins:build_plugins_static'] else 'shared'}-freetype"
