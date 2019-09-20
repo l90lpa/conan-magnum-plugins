@@ -97,8 +97,8 @@ class MagnumIntegrationConan(ConanFile):
     _build_subfolder = "build_subfolder"
 
     requires = (
-        "magnum/2019.01@rhololkeolke/testing",
-        "corrade/2019.01@rhololkeolke/testing",
+        "magnum/2019.01@rhololkeolke/stable",
+        "corrade/2019.01@rhololkeolke/stable",
     )
 
     def config_options(self):
