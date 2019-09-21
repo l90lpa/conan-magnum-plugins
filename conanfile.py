@@ -69,7 +69,7 @@ class MagnumIntegrationConan(ConanFile):
     }
     default_options = {
         "shared": False,
-        "build_plugins_static": True,
+        "build_plugins_static": False,
         "fPIC": True,
         "with_assimpimporter": False,
         "with_ddsimporter": False,
