@@ -27,7 +27,7 @@ def sort_libs(correct_order, libs, lib_suffix="", reverse_result=False):
 
 class MagnumIntegrationConan(ConanFile):
     name = "magnum-plugins"
-    version = "2019.01"
+    version = "2019.01.20190921"
     description = "Magnum Plugins - Plugins for the Magnum C++11/C++14 graphics engine"
     topics = ("conan", "corrade", "graphics", "rendering", "3d", "2d", "opengl")
     url = "https://github.com/rhololkeolke/conan-magnum-plugins"
@@ -98,8 +98,8 @@ class MagnumIntegrationConan(ConanFile):
     _build_subfolder = "build_subfolder"
 
     requires = (
-        "magnum/2019.01@rhololkeolke/stable",
-        "corrade/2019.01@rhololkeolke/stable",
+        "magnum/2019.01.20190921@rhololkeolke/stable",
+        "corrade/2019.01.20190921@rhololkeolke/stable",
     )
 
     def config_options(self):
@@ -161,12 +161,9 @@ class MagnumIntegrationConan(ConanFile):
             self.requires("assimp/5.0.0.rc2@rhololkeolke/stable")
 
     def source(self):
-        source_url = "https://github.com/mosra/magnum-plugins"
-        tools.get("{0}/archive/v{1}.tar.gz".format(source_url, self.version))
-        extracted_dir = self.name + "-" + self.version
-
-        # Rename to "source_subfolder" is a convention to simplify later steps
-        os.rename(extracted_dir, self._source_subfolder)
+        git = tools.Git(folder=self._source_subfolder)
+        git.clone("https://github.com/mosra/magnum-plugins.git")
+        git.checkout("8e6f49946e2de39b03eff85cf7a2a3c5d42b175c")
 
     def _configure_cmake(self):
         cmake = CMake(self)
